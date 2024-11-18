@@ -6,7 +6,6 @@ import {
   CreateOrderDto,
   OrderPaginationDto,
 } from './dtos';
-import { PaginationDto } from 'src/common';
 
 @Controller()
 export class OrdersController {
