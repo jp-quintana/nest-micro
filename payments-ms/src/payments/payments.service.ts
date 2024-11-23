@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { envs } from 'src/config';
 import Stripe from 'stripe';
 import { PaymentSessionDto } from './dtos';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class PaymentsService {
@@ -22,7 +23,7 @@ export class PaymentsService {
             product_data: {
               name: item.name,
             },
-            unit_amount: item.price * 100,
+            unit_amount: Math.round(item.price * 100),
           },
           quantity: item.quantity,
         };
@@ -33,5 +34,34 @@ export class PaymentsService {
     });
 
     return session;
+  }
+
+  async handleStripeWebhook(req: Request, res: Response) {
+    const sig = req.headers['stripe-signature'];
+
+    let event: Stripe.Event;
+    const endpointSecret = '';
+
+    try {
+      event = this.stripe.webhooks.constructEvent(
+        req['rawBody'],
+        sig,
+        endpointSecret,
+      );
+    } catch (error: any) {
+      return res.status(400).send(`Webhook Error: ${error.message}`);
+    }
+
+    switch (event.type) {
+      case 'charge.succeeded':
+        const paymentIntentSucceeded = event.data.object;
+        break;
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    console.log({ event });
+
+    return res.status(200).json({ sig });
   }
 }

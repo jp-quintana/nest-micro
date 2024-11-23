@@ -6,9 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { PaymentSessionDto } from './dtos';
+import { Request, Response } from 'express';
 
 @Controller('payments')
 export class PaymentsController {
@@ -36,7 +39,7 @@ export class PaymentsController {
   }
 
   @Post('webhook')
-  async stripeWebhook() {
-    return 'stripeWebhook';
+  stripeWebhook(@Req() req: Request, @Res() res: Response) {
+    return this.paymentsService.handleStripeWebhook(req, res);
   }
 }
