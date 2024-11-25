@@ -40,13 +40,13 @@ export class PaymentsService {
     const sig = req.headers['stripe-signature'];
 
     let event: Stripe.Event;
-    // const endpointSecret = '';
+    const endpointSecret = envs.stripeEndpointSecret;
 
     try {
       event = this.stripe.webhooks.constructEvent(
         req['rawBody'],
         sig,
-        // endpointSecret,
+        endpointSecret,
       );
     } catch (error: any) {
       return res.status(400).send(`Webhook Error: ${error.message}`);
