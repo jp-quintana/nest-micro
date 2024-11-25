@@ -9,12 +9,14 @@ export class PaymentsService {
   private readonly stripe = new Stripe(envs.stripeSecret);
 
   async createPaymentSession(paymentSessionDto: PaymentSessionDto) {
-    const { currency, items } = paymentSessionDto;
+    const { currency, items, orderId } = paymentSessionDto;
 
     const session = await this.stripe.checkout.sessions.create({
       // order id should go here
       payment_intent_data: {
-        metadata: {},
+        metadata: {
+          orderId,
+        },
       },
       line_items: items.map((item) => {
         return {
@@ -29,8 +31,8 @@ export class PaymentsService {
         };
       }),
       mode: 'payment',
-      success_url: 'http://localhost:3003/api/payments/success',
-      cancel_url: 'http://localhost:3003/api/payments/cancel',
+      success_url: envs.stripeSuccessUrl,
+      cancel_url: envs.stripeCancelUrl,
     });
 
     return session;
@@ -54,13 +56,11 @@ export class PaymentsService {
 
     switch (event.type) {
       case 'charge.succeeded':
-        const paymentIntentSucceeded = event.data.object;
+        const chargeSucceeded = event.data.object;
         break;
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
-
-    console.log({ event });
 
     return res.status(200).json({ sig });
   }
