@@ -38,7 +38,7 @@ export const envs = {
   port: envVars.PORT,
   natsServers: envVars.NATS_SERVERS,
   stripeSecret: envVars.STRIPE_SECRET,
-  stripeSuccessUrl: envVars.STRIPE_ENDPOINT_SECRET,
-  stripeCancelUrl: envVars.STRIPE_ENDPOINT_SECRET,
+  stripeSuccessUrl: envVars.STRIPE_SUCCESS_URL,
+  stripeCancelUrl: envVars.STRIPE_CANCEL_URL,
   stripeEndpointSecret: envVars.STRIPE_ENDPOINT_SECRET,
 };
