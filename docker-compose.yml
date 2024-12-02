@@ -89,8 +89,6 @@ services:
 
   auth-ms:
     build: ./auth-ms
-    ports:
-      - ${AUTH_MS_PORT}:${AUTH_MS_PORT}
     volumes:
       - ./auth-ms/src:/usr/src/app/src
     command: npm run start:dev
